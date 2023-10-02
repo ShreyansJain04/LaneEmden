@@ -101,7 +101,7 @@ N = st.sidebar.slider("Number of Steps (N)", min_value=10,
                       max_value=5000, step=10, value=1000)
 
 a = 0.0
-b = 10.0
+b = 40.0
 
 t, theta_euler, h_euler = euler_method(
     f, a, b, N, (1.0, 0.0), (0.0, 0.0), polytropic_index)
@@ -110,7 +110,9 @@ t, theta_heun, h_heun = heuns_method(
 t, theta_rk4, h_rk4 = runge_kutta_method(
     f, a, b, N, (1.0, 0.0), (0.0, 0.0), polytropic_index)
 
-
+root_index = np.argmax(theta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
+root_x = t[root_index]
+st.write(f"Root Value: {root_x:.2f}")
 plt.figure(figsize=(10, 6))
 plt.plot(t, theta_euler, label="Euler's Method")
 plt.plot(t, theta_heun, label="Heun's Method")
@@ -121,9 +123,20 @@ if polytropic_index in [0, 1, 5]:
     theta_analytical = analytical(t_analytical, polytropic_index)
     plt.plot(t_analytical, theta_analytical,
              label=f"Analytical (N={polytropic_index})", linestyle="--")
+    
+# root_index = np.argmax(theta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
+
+# Plot a vertical line at the root point
+plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
+
+# Display the root value on the graph
+# root_value = theta_rk4[root_index]
+# plt.annotate(f'Root: {root_value:.2f}', (t[root_index], root_value), textcoords="offset points", xytext=(-50,-10), ha='center', fontsize=10, color='red')
+
 
 plt.title("Lane-Emden Equation Solutions")
 plt.xlabel("ξ")
 plt.ylabel("θ")
 plt.legend()
+plt.grid(True)
 st.pyplot(plt)

@@ -112,6 +112,7 @@ t, theta_heun, h_heun = heuns_method(
 plt.figure(figsize=(10, 6))
 plt.plot(t, theta_euler, label="Euler's Method")
 plt.plot(t, theta_heun, label="Heun's Method")
+plt.plot(t, runge_kutta_method, label="Runge-Kutta Method")
 
 if polytropic_index in [0, 1, 5]:
     t_analytical = np.linspace(a, b, 1000)

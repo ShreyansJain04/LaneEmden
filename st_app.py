@@ -112,7 +112,7 @@ t, theta_rk4, h_rk4,dtheta_rk4 = runge_kutta_method(
 
 root_index = np.argmax(theta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
 root_x = t[root_index]
-st.write(f"θ Root Value: {root_x:.2f}")
+# st.write(f"θ Root Value: {root_x:.2f}")
 plt.figure(figsize=(10, 6))
 plt.subplot(2, 1, 1)
 plt.plot(t, theta_euler, label="Euler's Method")
@@ -126,8 +126,14 @@ if polytropic_index in [0, 1, 5]:
     plt.plot(t_analytical, theta_analytical,
              label=f"Analytical (N={polytropic_index})", linestyle="--")
     
+if np.any(theta_rk4 < 0):
+    root_x = t[root_index]
+    plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
 
-plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
+    st.write(f"θ Root Value: {root_x:.2f}")
+else:
+    st.write("No root found")
+
 
 
 
@@ -142,9 +148,18 @@ plt.plot(t, dtheta_rk4, label="Runge-Kutta Method")
 plt.xlabel("ξ")
 plt.ylabel("dθ")
 plt.grid(True)
-root_index_1 = np.argmax(dtheta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
+root_index_1 = np.argmax(dtheta_rk4 < 0)  
 root_x = t[root_index_1]
-st.write(f"dθ Root Value: {root_x:.2f}")
-plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
+
+if np.any(dtheta_rk4 < 0):
+    root_x = t[root_index_1]
+    plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
+
+    st.write(f"dθ Root Value: {root_x:.2f}")
+else:
+    st.write("No root found")
+
+# st.write(f"dθ Root Value: {root_x:.2f}")
+# plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
 
 st.pyplot(plt)

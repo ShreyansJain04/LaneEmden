@@ -146,16 +146,16 @@ plt.grid(True)
 plt.subplot(2, 1, 2)
 plt.plot(t, dtheta_rk4, label="Runge-Kutta Method")
 plt.xlabel("ξ")
-plt.ylabel("dθ")
+plt.ylabel("dθ/dξ")
 plt.grid(True)
-root_index_1 = np.argmax(dtheta_rk4 < 0)  
-root_x = t[root_index_1]
+root_index_1 = np.argmax(theta_rk4 < 0)  
+# root_x = t[root_index_1]
 
-if np.any(dtheta_rk4 < 0):
-    root_x = t[root_index_1]
-    plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
-
-    st.write(f"dθ Root Value: {root_x:.2f}")
+if np.any(theta_rk4 < 0):
+    root_x = t[root_index]
+    plt.plot(root_x, dtheta_rk4[root_index], 'rx', markersize=10, label='Root')
+    st.write(f"dθ/dξ Root Value: {dtheta_rk4[root_index]:.2f}")
+    st.write(f"-ξ^2 * dθ/dξ Root Value: {-root_x**2 * dtheta_rk4[root_index]:.2f}")
 else:
     st.write("No root found")
 

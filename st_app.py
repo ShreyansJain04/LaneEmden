@@ -90,7 +90,7 @@ def runge_kutta_method(f, a, b, N, IV, V, polytropic_index):
         theta[i] = theta[i-1] + (k1 + 2*k2 + 2*k3 + k4) / 6
         dtheta[i] = dtheta[i-1] + (l1 + 2*l2 + 2*l3 + l4) / 6
 
-    return t, theta, h
+    return t, theta, h,dtheta
 
 
 st.title("Lane-Emden Equation Solver")
@@ -107,16 +107,18 @@ t, theta_euler, h_euler = euler_method(
     f, a, b, N, (1.0, 0.0), (0.0, 0.0), polytropic_index)
 t, theta_heun, h_heun = heuns_method(
     f, a, b, N, (1.0, 0.0), (0.0, 0.0), polytropic_index)
-t, theta_rk4, h_rk4 = runge_kutta_method(
+t, theta_rk4, h_rk4,dtheta_rk4 = runge_kutta_method(
     f, a, b, N, (1.0, 0.0), (0.0, 0.0), polytropic_index)
 
 root_index = np.argmax(theta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
 root_x = t[root_index]
-st.write(f"Root Value: {root_x:.2f}")
+st.write(f"θ Root Value: {root_x:.2f}")
 plt.figure(figsize=(10, 6))
+plt.subplot(2, 1, 1)
 plt.plot(t, theta_euler, label="Euler's Method")
 plt.plot(t, theta_heun, label="Heun's Method")
 plt.plot(t, theta_rk4, label="Runge-Kutta Method")
+
 
 if polytropic_index in [0, 1, 5]:
     t_analytical = np.linspace(a, b, 1000)
@@ -124,14 +126,9 @@ if polytropic_index in [0, 1, 5]:
     plt.plot(t_analytical, theta_analytical,
              label=f"Analytical (N={polytropic_index})", linestyle="--")
     
-# root_index = np.argmax(theta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
 
-# Plot a vertical line at the root point
 plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
 
-# Display the root value on the graph
-# root_value = theta_rk4[root_index]
-# plt.annotate(f'Root: {root_value:.2f}', (t[root_index], root_value), textcoords="offset points", xytext=(-50,-10), ha='center', fontsize=10, color='red')
 
 
 plt.title("Lane-Emden Equation Solutions")
@@ -139,4 +136,15 @@ plt.xlabel("ξ")
 plt.ylabel("θ")
 plt.legend()
 plt.grid(True)
+
+plt.subplot(2, 1, 2)
+plt.plot(t, dtheta_rk4, label="Runge-Kutta Method")
+plt.xlabel("ξ")
+plt.ylabel("dθ")
+plt.grid(True)
+root_index_1 = np.argmax(dtheta_rk4 < 0)  # Assuming the root is where theta_rk4 crosses zero
+root_x = t[root_index_1]
+st.write(f"dθ Root Value: {root_x:.2f}")
+plt.plot(root_x, 0, 'rx', markersize=10, label='Root')
+
 st.pyplot(plt)
